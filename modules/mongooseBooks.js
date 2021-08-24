@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-module.exports =handleBooksData;
+
 
 const bookSchema = new mongoose.Schema({
     title: String,
@@ -8,6 +8,7 @@ const bookSchema = new mongoose.Schema({
   });
 
   const booksModel = mongoose.model('Books', bookSchema);
+  module.exports =booksModel;
 
 
 function bookData() {
@@ -37,16 +38,22 @@ function bookData() {
 // bookData();
 
 // // localhost:3001/books?email=whatever
-function handleBooksData(req,res) {
-    console.log('inside handler func')
-    let userEmail = req.query.email;
-    booksModel.find({email:userEmail},function(error,bookInfo){
-        if(error) {
-            console.log('error in getting the data')
-        } else {
-            console.log(bookInfo);
-            res.send(bookInfo)
-        }
-    })
-}
+// function handleBooksData(req,res) {
+//     console.log('inside handler func')
+//     let userEmail = req.query.email;
+//     booksModel.find({email:userEmail},function(error,bookInfo){
+//         if(error) {
+//             console.log('error in getting the data')
+//         } else {
+//             console.log(bookInfo);
+//             res.send(bookInfo)
+//         }
+//     })
+// }
+
+// function handleAddingData(req,res) {
+//     let { title, description, email } = req.body;
+    
+
+// }
 
