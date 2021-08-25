@@ -15,6 +15,7 @@ mongoose.connect('mongodb://localhost:27017/book', {useNewUrlParser: true, useUn
 server.get('/books',handleBooksData);
 server.post('/addbooks',handleAddingData);
 server.delete('/deletebooks/:bookID2',handleDeletingData);
+server.put('/updateBook/:bookID',handleUpdatingData);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -44,64 +45,30 @@ async function handleAddingData(req,res) {
           console.log('error in getting the data')
       } else {
           res.send(bookInfo)
+          console.log('hhhhhhhhhhh',bookInfo);
+          console.log(typeof(bookInfo._id));
       }
   })
 
   }
 
-//   function handleDeletingData(req,res) {
-//     // console.log(req.query.catID)
-//     // let email= req.query.email;
-
-//     let bookID = req.query.bookID2;
-//     console.log('the id of the object',bookID);
-//     booksModel.deleteOne({_id:bookID},(error,bookData)=>{
-
-//       if (bookID === _id){
-//         res.send(bookData)
-//       }
-//       else {
-//         console.log('error');
-//       }
-        
-//         }
-//    )
-
-
-
-// }
-
-
-
-// if(error) {
-//   console.log('error in deleteing the data')
-//   // console.log('data deleted hhhhhhh', bookData);
-// } else {
-//   // console.log('data deleted', bookData)
-//   booksModel.find({ email }, function (err, bookData) {
-//       if (err) {
-//           console.log('error in getting the data')
-//           // console.log('data deleted', bookData)
-//       } else {
-//           // console.log(bookData);
-//           res.send(bookData)
-//       }
-//   })
-
 
 function handleDeletingData(req,res) {
-  // console.log(req.query.catID)
   
   let email= req.query.email;
   console.log(req.params);
   let bookID = req.params.bookID2;
   console.log(bookID);
+  
+  
+  
   booksModel.remove({_id:bookID},(error,bookData1)=>{
       if(error) {
-          console.log('error in deleteing the data')
+          console.log('error in deleteing the data',error)
+          // console.log();
       } else {
-          // console.log('data deleted', bookData)
-          booksModel.findById({email}, function (error, bookData) {
+          console.log('data deleted', bookData1)
+          booksModel.find({email}, function (error, bookData) {
               if (error) {
                   console.log('error in getting the data')
               } else {
@@ -111,14 +78,35 @@ function handleDeletingData(req,res) {
       }
   })
 
-
-
 }
 
+  function handleUpdatingData (req,res) {
+
+    let { title, description, email } = req.body;
+    let bookID = req.params.bookID;
+    booksModel.findOne({_id:bookID},(error,bookInfo) =>{
+      bookInfo.email = email;
+      bookInfo.title= title;
+      bookInfo.description= description;
+
+      console.log('aaaaaaaaaaaa',bookInfo)
+      bookInfo.save()
+      .then(()=>{
+         booksModel.find({ email }, function (err, bookData) {
+              if (err) {
+                  console.log('error in getting the data')
+              } else {
+                  res.send(bookData)
+              }
+          })
+      }).catch(error=>{
+          console.log('error in saving ')
+      })
+  })
+
+  }
 
 
-
-
-server.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`listening on PORT ${PORT}`)
 });
