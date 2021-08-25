@@ -9,7 +9,7 @@ server.use(cors());
 const booksModel = require('./modules/mongooseBooks.js');
 server.use(express.json());
 
-mongoose.connect(process.env.MONGO_LINK, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(`${process.env.MONGO_LINK}`, {useNewUrlParser: true, useUnifiedTopology: true});
 //'mongodb://localhost:27017/book'
 
 
